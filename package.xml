@@ -1,0 +1,18 @@
+<package>
+  <!-- Package Metadata -->
+  <name>cad_renderer</name>
+  <maintainer email="martin@ais.uni-bonn.de">German Martin</maintainer>
+  <description>
+    Based on pcl code from:
+    http://robotica.unileon.es/mediawiki/index.php/PCL/OpenNI_tutorial_5:_3D_object_recognition_%28pipeline%29#Getting_partial_views
+  </description>
+  <version>0.0.1</version>
+  <license>BSD</license>
+
+  <!-- Required by Catkin -->
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <!-- Package Dependencies >
+  <build_depend>roscpp</build_depend>
+  <run_depend>roscpp</run_depend-->
+</package>
