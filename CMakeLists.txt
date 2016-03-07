@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
  
 project(cad_renderer)
+set(PROJECT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(PROJECT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+#Include Required Directories
+include_directories("${PROJECT_INCLUDE_DIR}")
 
 # Find Catkin
 find_package(catkin REQUIRED)
@@ -15,10 +19,12 @@ add_definitions(${PCL_DEFINITIONS})
  
 set(PCL_BUILD_TYPE Release)
  
-file(GLOB PCL_snapshot_creator_rgb_SRC
-    "src/*.h"
-    "src/*.cpp"
+add_library(RENDERER SHARED
+
+    ${PROJECT_SOURCE_DIR}/render_views_tesselated_sphere_rgb.cpp
+    ${PROJECT_SOURCE_DIR}/Renderer.cpp
 )
-add_executable(snapshotCreatorRGB ${PCL_snapshot_creator_rgb_SRC})
- 
-target_link_libraries(snapshotCreatorRGB ${PCL_LIBRARIES})
+
+add_executable(snapshotCreatorRGB ${PROJECT_SOURCE_DIR}/main.cpp)
+target_link_libraries(snapshotCreatorRGB ${PCL_LIBRARIES} RENDERER)
+
