@@ -1,7 +1,10 @@
 /*
+ *  Renderer.cpp
  *
- * This Class is based on the code of:
- * http://robotica.unileon.es/mediawiki/index.php/PCL/OpenNI_tutorial_5:_3D_object_recognition_%28pipeline%29#Getting_partial_views
+ *  Created on: 7 Mar 2016
+ *      Author: martin
+ *  Based on pcl code from:
+ *  http://robotica.unileon.es/mediawiki/index.php/PCL/OpenNI_tutorial_5:_3D_object_recognition_%28pipeline%29#Getting_partial_views
  *
  *
  */
@@ -16,7 +19,8 @@
 #include <iostream>
 #include "Renderer.h"
 
-Renderer::Renderer(std::string& model): model_path(model) {
+Renderer::Renderer(std::string& model,std::string& output_path): model_path(model),
+	output_path(output_path){
 
 }
 
@@ -171,146 +175,6 @@ void Renderer::switch_axes(pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud) {
 	}
 }
 
-//int
-//main_old(int argc, char** argv)
-//{
-//	// Load the PLY model from a file.
-//	vtkSmartPointer<vtkPLYReader> reader = vtkSmartPointer<vtkPLYReader>::New();
-//	reader->SetFileName(argv[1]);
-//	reader->Update();
-//
-//	// VTK is not exactly straightforward...
-//	vtkSmartPointer < vtkPolyDataMapper > mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-//	mapper->SetInputConnection(reader->GetOutputPort());
-//	mapper->Update();
-//
-//	vtkSmartPointer<vtkPolyData> object = mapper->GetInput();
-//
-//	// Virtual scanner object.
-//	pcl::apps::RenderViewsTesselatedSphereRGBA render_views;
-//	render_views.addModelFromPolyData(object);
-//	// Pixel width of the rendering window, it directly affects the snapshot file size.
-//	render_views.setResolution(250);
-//	// Horizontal FoV of the virtual camera.
-//	render_views.setViewAngle(57.0f);
-//	// If true, the resulting clouds of the snapshots will be organized.
-//	render_views.setGenOrganized(true);
-//	// How much to subdivide the icosahedron. Increasing this will result in a lot more snapshots.
-//	render_views.setTesselationLevel(1);
-//	// If true, the camera will be placed at the vertices of the triangles. If false, at the centers.
-//	// This will affect the number of snapshots produced (if true, less will be made).
-//	// True: 42 for level 1, 162 for level 2, 642 for level 3...
-//	// False: 80 for level 1, 320 for level 2, 1280 for level 3...
-//	render_views.setUseVertices(true);
-//	// If true, the entropies (the amount of occlusions) will be computed for each snapshot (optional).
-//	render_views.setComputeEntropies(true);
-//
-//
-//	//render_views.generateViews();
-//	//generate a single view instead
-//	//							    X   Y   Z
-//	Eigen::Vector3f cam_position(1.01,1.0,0.5);
-//	cam_position = cam_position.normalized();
-//
-//	double pos_x = atoi(argv[2]);//250.;
-//	double pos_y = atoi(argv[3]);//250.;
-//	double pos_z = atoi(argv[4]);// 200.;
-//	switch_axes(pos_x,pos_y,pos_z);
-//
-//	double orig_x = atoi(argv[5]);
-//	double orig_y = atoi(argv[6]);
-//	double orig_z = atoi(argv[7]);
-//	switch_axes(orig_x,orig_y,orig_z);
-//	Eigen::Vector3f origin(orig_x,orig_y,orig_z);
-//	Eigen::Vector3f dest(pos_x,pos_y,pos_z);
-//
-//	get_cam_values(origin,  dest, cam_position);
-//	std::cout <<"cam_position="<<cam_position[0]<<" "<<cam_position[1]<<" "<<cam_position[2]<<std::endl;
-//
-//	//defines a rotation around the (Y) axis of the original model
-//	double req_yaw = atof(argv[8]);
-//	simulate_yaw_rotation(req_yaw,  cam_position);
-//	std::cout <<"cam_position with req_yaw="<<cam_position[0]<<" "<<cam_position[1]<<" "<<cam_position[2]<<std::endl;
-//	render_views.generateView(cam_position);
-//
-//	// Object for storing the rendered views.
-//	std::vector<pcl::PointCloud<pcl::PointXYZRGBA>::Ptr> views;
-//	// Object for storing the poses, as 4x4 transformation matrices.
-//	std::vector<Eigen::Matrix4f, Eigen::aligned_allocator<Eigen::Matrix4f> > poses;
-//	// Object for storing the entropies (optional).
-//	std::vector<float> entropies;
-//	render_views.getViews(views);
-//	render_views.getPoses(poses);
-//	render_views.getEntropies(entropies);
-//
-//	pcl::PointCloud<pcl::PointXYZRGBA>::Ptr frame(new pcl::PointCloud<pcl::PointXYZRGBA>);
-//
-//
-//	// Save all views to disk.
-//	for (size_t i = 0; i < views.size(); i++)
-//	{
-//		std::stringstream stream;
-//		stream << "view" << i << ".pcd";
-//		std::string filename = stream.str();
-//		if (pcl::io::savePCDFile(filename, *(views.at(i)), true) != 0)
-//			PCL_ERROR("Problem saving %s.\n", filename.c_str());
-//
-//
-//		//visualize it
-//		pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud(
-//			new pcl::PointCloud<pcl::PointXYZRGBA>);
-//		cloud = views.at(i);
-//
-//		Eigen::Matrix4f inverse_pose = poses.at(i).inverse();
-//
-//		pcl::transformPointCloud(*cloud, *cloud,inverse_pose );
-//		//undo the requested yaw rotation
-//		undo_yaw_rotation(req_yaw,cloud);
-//
-//
-//
-//
-//
-//		//create a dummy 3D world
-//		//create_frame(frame);
-//		//Eigen::Vector3f dest2(dest[0]*10,dest[0]*10,dest[0]*10);
-//		add_at_position(dest,frame,cloud);
-//		add_observation_point(origin,cloud);
-//		add_line_to_target(dest,cloud);
-//
-//		switch_axes(cloud);
-//
-//		double min_x = 9999.;
-//		double max_x = 0.;
-//		for(pcl::PointXYZRGBA& point : *cloud){
-//			if(!isnan(point.x)){
-//				//point.x /= 1000.;
-//				//point.y /= 1000.;
-//				//point.z /= 1000.;
-//
-//				if(point.x < min_x)
-//					min_x=point.x;
-//				if(point.x > max_x)
-//					max_x=point.x;
-//			}
-//
-//		}
-//		std::cout <<" min="<<min_x<<" max="<<max_x<<std::endl;
-//		pcl::visualization::PCLVisualizer viewer("CLOUD");
-//		viewer.addPointCloud < pcl::PointXYZRGBA > (cloud, "CLOUD");
-//		viewer.addCoordinateSystem(100.5);
-//		viewer.setPointCloudRenderingProperties(
-//			pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 5, "CLOUD");
-//
-//		//double pos_x = 0., pos_y = -50.,  pos_z = -0.,  up_x = 0.,  up_y = 0.,  up_z= 1.;
-//		//Eigen::Vector3f view_vector(dest[0]-origin[0], dest[1]-origin[1],dest[2]-origin[2]);
-//		//Eigen::Vector3f perp = view_vector.cross(Eigen::Vector3f::UnitX());
-//		//viewer.setCameraPosition (origin[0] ,origin[1],  origin[2],  0,  1 ,  0);
-//
-//		viewer.spin();
-//	}
-//}
-
 void Renderer::visualize(pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud) {
 	pcl::visualization::PCLVisualizer viewer("CLOUD");
 	viewer.addPointCloud < pcl::PointXYZRGBA > (cloud, "CLOUD");
@@ -400,7 +264,8 @@ void Renderer::render_view(double view_x, double view_y,
 	for (size_t i = 0; i < views.size(); i++) {
 		std::stringstream stream;
 		stream << "view" << i << ".pcd";
-		std::string filename = stream.str();
+		std::string filename = output_path+stream.str();
+		std::cout <<" saving at "<<filename<<std::endl;
 		if (pcl::io::savePCDFile(filename, *(views.at(i)), true) != 0)
 			PCL_ERROR("Problem saving %s.\n", filename.c_str());
 
@@ -447,6 +312,11 @@ void Renderer::render_view(double view_x, double view_y,
 	}
 }
 
+/*
+ * for a given view point places the object at the specified (expected) position,
+ * and renders several views by rotating the model around its vertical axis (Z)
+ *
+ */
 void Renderer::render_views(double view_x, double view_y,
 		double view_z, double pos_x, double pos_y, double pos_z,
 		std::vector<pcl::PointCloud<pcl::PointXYZRGBA>::Ptr>& renderizations){
@@ -455,5 +325,78 @@ void Renderer::render_views(double view_x, double view_y,
 		pcl::PointCloud<pcl::PointXYZRGBA>::Ptr renderization;
 		render_view(view_x,view_y, view_z, pos_x, pos_y, pos_z, yaw, renderization);
 		renderizations.push_back(renderization);
+	}
+}
+
+/*
+ * renders all possible views around the object
+ *
+ * 	@views: Object for storing the rendered views
+ * 	@poses: Object for storing the poses, as 4x4 transformation matrices.
+ *
+ */
+void Renderer::render_all_views(std::vector < pcl::PointCloud < pcl::PointXYZRGBA > ::Ptr >& views,
+		std::vector<Eigen::Matrix4f, Eigen::aligned_allocator<Eigen::Matrix4f> >& poses) {
+
+
+	// Load the PLY model from a file.
+	vtkSmartPointer < vtkPLYReader > reader = vtkSmartPointer < vtkPLYReader
+			> ::New();
+	reader->SetFileName(model_path.c_str());
+	reader->Update();
+
+	// VTK is not exactly straightforward...
+	vtkSmartPointer < vtkPolyDataMapper > mapper = vtkSmartPointer
+			< vtkPolyDataMapper > ::New();
+	mapper->SetInputConnection(reader->GetOutputPort());
+	mapper->Update();
+
+	vtkSmartPointer < vtkPolyData > object = mapper->GetInput();
+
+	// Virtual scanner object.
+	pcl::apps::RenderViewsTesselatedSphereRGBA render_views;
+	render_views.addModelFromPolyData(object);
+	// Pixel width of the rendering window, it directly affects the snapshot file size.
+	render_views.setResolution(300);
+	// Horizontal FoV of the virtual camera.
+	render_views.setViewAngle(57.0f);
+	// If true, the resulting clouds of the snapshots will be organized.
+	render_views.setGenOrganized(true);
+	// How much to subdivide the icosahedron. Increasing this will result in a lot more snapshots.
+	render_views.setTesselationLevel(1);
+	// If true, the camera will be placed at the vertices of the triangles. If false, at the centers.
+	// This will affect the number of snapshots produced (if true, less will be made).
+	// True: 42 for level 1, 162 for level 2, 642 for level 3...
+	// False: 80 for level 1, 320 for level 2, 1280 for level 3...
+	render_views.setUseVertices(true);
+	// If true, the entropies (the amount of occlusions) will be computed for each snapshot (optional).
+	render_views.setComputeEntropies(true);
+	render_views.generateViews();
+
+	// Object for storing the entropies (optional).
+	std::vector<float> entropies;
+	render_views.getViews(views);
+	render_views.getPoses(poses);
+	render_views.getEntropies(entropies);
+
+	// Save all views to disk.
+	for (size_t i = 0; i < views.size(); i++) {
+		std::stringstream stream;
+		stream << "view" << i << ".pcd";
+		std::string filename = output_path+stream.str();
+
+		//visualize it
+		pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud(
+				new pcl::PointCloud<pcl::PointXYZRGBA>);
+		cloud = views.at(i);
+
+
+		//Eigen::Matrix4f inverse_pose = poses.at(i).inverse();
+		//pcl::transformPointCloud(*cloud, *cloud, inverse_pose);
+
+		switch_axes(cloud);
+		if (pcl::io::savePCDFile(filename, *cloud, true) != 0)
+			PCL_ERROR("Problem saving %s.\n", filename.c_str());
+
 	}
 }

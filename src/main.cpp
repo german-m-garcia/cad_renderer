@@ -23,31 +23,49 @@ main(int argc, char** argv)
 	}
 
 	std::string model_path(argv[1]);
-	Renderer renderer(model_path);
+	std::string output_path("/home/martin/renderizations/");
+	Renderer renderer(model_path,output_path);
 	double pos_x = atoi(argv[2]);
 	double pos_y = atoi(argv[3]);
 	double pos_z = atoi(argv[4]);
 	double view_x = atoi(argv[5]);
 	double view_y = atoi(argv[6]);
 	double view_z = atoi(argv[7]);
+
+	/*
+	 * ---------------------------------------------------------------------
+	 * to test the renderization of all possible view points, run the following:
+	 *
+	 */
 	std::vector<pcl::PointCloud<pcl::PointXYZRGBA>::Ptr> renderizations;
-	renderer.render_views(view_x,view_y, view_z, pos_x, pos_y, pos_z, renderizations);
-
-	for(pcl::PointCloud<pcl::PointXYZRGBA>::Ptr& cloud: renderizations){
-		renderer.visualize(cloud);
-	}
+	std::vector<Eigen::Matrix4f, Eigen::aligned_allocator<Eigen::Matrix4f> > poses;
+	renderer.render_all_views( renderizations,poses);
 
 
-	//to test the renderization of just one possible yaw, run the following:
-	//pcl::PointCloud<pcl::PointXYZRGBA>::Ptr renderization;
-	//double yaw = 0.;
-	//renderer.render_view(view_x,view_y, view_z, pos_x, pos_y, pos_z, yaw, renderization);
+	/*
+	 * ---------------------------------------------------------------------
+	 * to test the renderization of all possible yaws, run the following:
+	 *
+	 */
+//	std::vector<pcl::PointCloud<pcl::PointXYZRGBA>::Ptr> renderizations;
+//	renderer.render_views(view_x,view_y, view_z, pos_x, pos_y, pos_z, renderizations);
+//
+//	for(pcl::PointCloud<pcl::PointXYZRGBA>::Ptr& cloud: renderizations){
+//		renderer.visualize(cloud);
+//	}
 
-	//for (double yaw = 0.0; yaw < 0.45; yaw += 0.05){
-	//	pcl::PointCloud<pcl::PointXYZRGBA>::Ptr renderization;
-	//	renderer.render_view(view_x,view_y, view_z, pos_x, pos_y, pos_z, yaw, renderization);
-	//	renderer.visualize(renderization);
-	//}
+
+	/*
+	 * ---------------------------------------------------------------------
+	 * to test the renderization of just one possible yaw, run the following:
+	 *
+	 */
+//	pcl::PointCloud<pcl::PointXYZRGBA>::Ptr renderization;
+//	double yaw = 0.;
+//	renderer.render_view(view_x,view_y, view_z, pos_x, pos_y, pos_z, yaw, renderization);
+//	renderer.visualize(renderization);
+
+
 
 	return 0;
 
