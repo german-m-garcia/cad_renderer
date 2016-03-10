@@ -205,7 +205,7 @@ void Renderer::render_view(double view_x, double view_y,
 	pcl::apps::RenderViewsTesselatedSphereRGBA render_views;
 	render_views.addModelFromPolyData(object);
 	// Pixel width of the rendering window, it directly affects the snapshot file size.
-	render_views.setResolution(300);
+	render_views.setResolution(350);
 	// Horizontal FoV of the virtual camera.
 	render_views.setViewAngle(57.0f);
 	// If true, the resulting clouds of the snapshots will be organized.
@@ -357,7 +357,7 @@ void Renderer::render_all_views(std::vector < pcl::PointCloud < pcl::PointXYZRGB
 	pcl::apps::RenderViewsTesselatedSphereRGBA render_views;
 	render_views.addModelFromPolyData(object);
 	// Pixel width of the rendering window, it directly affects the snapshot file size.
-	render_views.setResolution(300);
+	render_views.setResolution(350);
 	// Horizontal FoV of the virtual camera.
 	render_views.setViewAngle(57.0f);
 	// If true, the resulting clouds of the snapshots will be organized.
