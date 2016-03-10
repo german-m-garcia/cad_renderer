@@ -264,48 +264,36 @@ void Renderer::render_view(double view_x, double view_y,
 	for (size_t i = 0; i < views.size(); i++) {
 		std::stringstream stream;
 		stream << "view" << i << ".pcd";
-		std::string filename = output_path+stream.str();
-		std::cout <<" saving at "<<filename<<std::endl;
-		if (pcl::io::savePCDFile(filename, *(views.at(i)), true) != 0)
-			PCL_ERROR("Problem saving %s.\n", filename.c_str());
-
 		//visualize it
 		pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud(
 				new pcl::PointCloud<pcl::PointXYZRGBA>);
 		cloud = views.at(i);
+		std::string filename = output_path+stream.str();
+		std::cout <<" saving at "<<filename<<std::endl;
+
+		if (pcl::io::savePCDFile(filename, *(views.at(i)), true) != 0)
+			PCL_ERROR("Problem saving %s.\n", filename.c_str());
+
+
 
 		Eigen::Matrix4f inverse_pose = poses.at(i).inverse();
 
 		pcl::transformPointCloud(*cloud, *cloud, inverse_pose);
+
 		//undo the requested yaw rotation
 		undo_yaw_rotation(req_yaw, cloud);
+
 
 		//create a dummy 3D world
 		//create_frame(frame);	
 		//Eigen::Vector3f dest2(dest[0]*10,dest[0]*10,dest[0]*10);		
 		add_at_position(dest, frame, cloud);
-		add_observation_point(origin, cloud);
-		add_line_to_target(dest, cloud);
+
+		//add_observation_point(origin, cloud);
+
+		//add_line_to_target(dest, cloud);
 
 		switch_axes(cloud);
-
-		double min_x = 9999.;
-		double max_x = 0.;
-		for (pcl::PointXYZRGBA& point : *cloud) {
-			if (!isnan(point.x)) {
-				//point.x /= 1000.;
-				//point.y /= 1000.;
-				//point.z /= 1000.;
-
-				if (point.x < min_x)
-					min_x = point.x;
-				if (point.x > max_x)
-					max_x = point.x;
-			}
-
-		}
-
-		std::cout << " min=" << min_x << " max=" << max_x << std::endl;
 
 		renderization = cloud;
 
