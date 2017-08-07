@@ -11,7 +11,8 @@ find_package(catkin REQUIRED)
 # Declare this project as a catkin package
 catkin_package()
  
-find_package(PCL 1.7 REQUIRED)
+set(PCL_DIR "~/workspace/pcl/build/")
+find_package(PCL 1.8 REQUIRED)
 SET(CMAKE_CXX_FLAGS "-O4 -std=c++11 -g -Wall -fopenmp")
 include_directories(${PCL_INCLUDE_DIRS})
 link_directories(${PCL_LIBRARY_DIRS})
@@ -27,4 +28,3 @@ add_library(RENDERER SHARED
 
 add_executable(snapshotCreatorRGB ${PROJECT_SOURCE_DIR}/main.cpp)
 target_link_libraries(snapshotCreatorRGB ${PCL_LIBRARIES} RENDERER)
-

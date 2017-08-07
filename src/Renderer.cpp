@@ -35,8 +35,8 @@ void Renderer::get_cam_values(Eigen::Vector3f& origin, Eigen::Vector3f& dest,
 	cam_values[1] = origin[1] - dest[1];
 	cam_values[2] = origin[2] - dest[2];
 	cam_values.normalize();
-	std::cout << "get_cam_values::norm of cam_values=" << cam_values.norm()
-			<< std::endl;
+	//std::cout << "get_cam_values::norm of cam_values=" << cam_values.norm()
+	//		<< std::endl;
 }
 
 void Renderer::simulate_yaw_rotation(double yaw, Eigen::Vector3f& cam_values) {
@@ -48,14 +48,14 @@ void Renderer::simulate_yaw_rotation(double yaw, Eigen::Vector3f& cam_values) {
 	double radius = sqrt(2 * h - h * h);
 	double cur_z = cam_values[2];
 	double current_yaw = atan2(cur_x, cur_z);
-	std::cout << "> current yaw=" << current_yaw << std::endl;
+	//std::cout << "> current yaw=" << current_yaw << std::endl;
 
 	yaw += current_yaw;
-	std::cout << "> requested yaw=" << yaw << std::endl;
+	//std::cout << "> requested yaw=" << yaw << std::endl;
 	cam_values[0] = sin(yaw) * radius;
 	cam_values[2] = cos(yaw) * radius;
-	std::cout << "simulate_yaw_rotation::yaw trick cam norm="
-			<< cam_values.norm() << std::endl;
+	//std::cout << "simulate_yaw_rotation::yaw trick cam norm="
+	//		<< cam_values.norm() << std::endl;
 }
 
 void Renderer::undo_yaw_rotation(double& yaw,
@@ -64,7 +64,7 @@ void Renderer::undo_yaw_rotation(double& yaw,
 	Eigen::Affine3f transform = Eigen::Affine3f::Identity();
 
 	// The same rotation matrix as before; tetha radians arround Y axis
-	std::cout << "> undo_yaw_rotation yaw=" << -yaw << std::endl;
+	//std::cout << "> undo_yaw_rotation yaw=" << -yaw << std::endl;
 	transform.rotate(Eigen::AngleAxisf(-yaw, Eigen::Vector3f::UnitY()));
 
 	pcl::transformPointCloud(*cloud, *cloud, transform);
@@ -236,15 +236,15 @@ void Renderer::render_view(double view_x, double view_y,
 	Eigen::Vector3f dest(pos_x, pos_y, pos_z);
 
 	get_cam_values(origin, dest, cam_position);
-	std::cout << "cam_position=" << cam_position[0] << " " << cam_position[1]
-			<< " " << cam_position[2] << std::endl;
+	//std::cout << "cam_position=" << cam_position[0] << " " << cam_position[1]
+	//		<< " " << cam_position[2] << std::endl;
 
 	//iterate for a number of rotations of the model
 
 	//defines a rotation around the (Y) axis of the original model		
 	simulate_yaw_rotation(req_yaw, cam_position);
-	std::cout << "cam_position with req_yaw=" << cam_position[0] << " "
-			<< cam_position[1] << " " << cam_position[2] << std::endl;
+	//std::cout << "cam_position with req_yaw=" << cam_position[0] << " "
+	//		<< cam_position[1] << " " << cam_position[2] << std::endl;
 	render_views.generateView(cam_position);
 
 	// Object for storing the rendered views.
@@ -261,6 +261,8 @@ void Renderer::render_view(double view_x, double view_y,
 			new pcl::PointCloud<pcl::PointXYZRGBA>);
 
 	// Save all views to disk.
+	bool save_views = false;
+	if(save_views)
 	for (size_t i = 0; i < views.size(); i++) {
 		std::stringstream stream;
 		stream << "view" << i << ".pcd";

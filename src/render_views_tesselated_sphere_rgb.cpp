@@ -74,6 +74,8 @@ pcl::apps::RenderViewsTesselatedSphereRGBA::generateView(Eigen::Vector3f& cam_po
 	vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
 	mapper->SetInputConnection(trans_filter_center->GetOutputPort());
 	mapper->Update();
+	//TODO: added from http://vtk.1045678.n5.nabble.com/slow-rendering-of-large-vtkpolydata-td5717346.html
+	//mapper->ImmediateRenderModeOn();
 
 	//scale so it fits in the unit sphere!
 	double bb[6];
